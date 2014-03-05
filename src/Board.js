@@ -2,7 +2,13 @@
 // It's part of the Board Visualizer
 // The only portions you need to work on are the helper functions (below)
 
+/* global Backbone, _ */
+
 (function() {
+
+  var hasConflict = function (arr) {
+    return !!arr.slice().sort()[arr.length - 2];
+  };
 
   window.Board = Backbone.Model.extend({
 
@@ -79,12 +85,14 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      return hasConflict(this.rows()[rowIndex]);
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      return _.some(this.rows(), function(row) {
+        return hasConflict(row);
+      });
     },
 
 
@@ -94,12 +102,16 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      return hasConflict(_.pluck(this.rows(), colIndex));
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var context = this;
+
+      return _.some(context.rows()[0], function(rows, index) {
+        return hasConflict(_.pluck(context.rows(), index));
+      });
     },
 
 
