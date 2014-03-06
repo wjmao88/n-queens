@@ -174,7 +174,7 @@ window.countNQueensSolutions = function(n) {
   return counter;
 };
 
-window.countNQueensSolutions = function(n) {
+window.countNQueensSolutionsBit = function(n) {
   console.log('============= START ' + n + ' =============');
   if (n === 1 || n === 0){
     return 1;
@@ -209,7 +209,7 @@ window.countNQueensSolutions = function(n) {
         if(!( !((colPrune | (1 << colIndex)) ^ colPrune) |
               !((majorPrune | (1 << (colIndex - rowIndex + n))) ^ majorPrune) |
               !((minorPrune | (1 << (colIndex + rowIndex + n))) ^ minorPrune ) ) ) {
-          //mylog('valid------------------');
+
           //prune
           rowPrune = rowPrune + (1 << rowIndex);
           colPrune = colPrune + (1 << colIndex);
@@ -236,7 +236,7 @@ window.countNQueensSolutions = function(n) {
   return counter;
 };
 
-window.countNQueensSolutions = function(n) {
+window.countNQueensSolutions2 = function(n) {
   console.log('============= START ' + n + ' =============');
   if (n === 1 || n === 0){
     return 1;
@@ -262,12 +262,15 @@ window.countNQueensSolutions = function(n) {
   // ((colPrune | (1 << colIndex)) ^ colPrune) => pruned : 0, unpruned : !0
   // we want (!0 && !0 && !0), which is !(0 | 0 | 0)
   //
-
   while(rowIndex < n || colIndex < n || queens < n){
     logger('nwrow');
-    if ( ((rowPrune | (1 << rowIndex)) ^ rowPrune) ){
+    boardIteration :
+    while(rowIndex < n){
+      if ( ((rowPrune | (1 << rowIndex)) ^ rowPrune) ){
+        rowIndex++;
+        break;
+      }
       while (colIndex < n){
-        logger('nwcol');
         if(!( !((colPrune | (1 << colIndex)) ^ colPrune) |
               !((majorPrune | (1 << (colIndex - rowIndex + n))) ^ majorPrune) |
               !((minorPrune | (1 << (colIndex + rowIndex + n))) ^ minorPrune ) ) ) {
@@ -290,11 +293,10 @@ window.countNQueensSolutions = function(n) {
             colIndex = 0;
             logger('newst');
           }
-        } else {
-          colIndex++;
         }
-      }
-    }
+      } //else is skipped
+      //colindex++ here
+    }//end boardIteration
     //unprune
     logger('itrtn');
     if (++rowIndex < n){
@@ -312,7 +314,7 @@ window.countNQueensSolutions = function(n) {
       colIndex++;
     }
     logger('ended');
-  }
+  }//end while
 
   function logger(msg){
     var str = '';
